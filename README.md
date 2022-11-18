@@ -1,3 +1,6 @@
+![](kinesin_fracture.gif)
+Example kMC simulation of a microtubule fracture in presence of kinesins-1
+
 ## A simple model for Motor-Tubulin interaction
 
 Microtubules are key structural elements of living cells that are crucial for cell division, intracellular transport and motility. Due to their important role in cell division, microtubules represent a primary target for cancer related drugs.
@@ -19,9 +22,3 @@ In this mechanism, a weak and transient destabilization of the lattice by the mo
 
 Within this repo, you will find all the source code used to conduct the numerical simulation. 
 You are free to use it at will. 
-
----
-
-## Example of microtubule fracture in presence of kinesins
-
-![](kinesin_fracture.gif)
