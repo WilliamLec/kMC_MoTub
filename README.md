@@ -20,5 +20,7 @@ The model is completed with a motor-lattice interaction: The irreversible motor 
 
 In this mechanism, a weak and transient destabilization of the lattice by the motor stepping promotes the formation of mobile vacancies. In the absence of free GTP-tubulin the defect rapidly propagates leading to a complete microtubule fracture. In the presence of free GTP-tubulin, the motor walk induces a vacancy drift in the direction opposite of the motor walk. The drift is accompanied by the direct and localized incorporation of free GTP-tubulin along the trajectory of the vacancy. These results are consistent with recent experiments in the literature and strongly suggest that a weak lattice-motor interaction is responsible for an augmented microtubule shaft plasticity.
 
-Within this repo, you will find all the source code used to conduct the numerical simulation. 
-You are free to use it at will. 
+Within this repo, you will find all the source code used to conduct the numerical simulation for investigating the impact of a flow of processive motor on the lattice dynamic of a microtubule. 
+
+Feel free to use it as you wish.
+
