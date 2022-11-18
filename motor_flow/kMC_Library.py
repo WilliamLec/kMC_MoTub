@@ -15,10 +15,19 @@ def latice_init(n, m):
     """ initialize the first configuration of the 2D lattice of size (n,m)
         initial configuration: empty lattice 
     """
+    
     lat = np.zeros((n, m)) 
+    
+    """ add a rectangle defect at mid length """
+    
+    ld = 5
+    Ld = int(m/3)
+    
+    lat[int((n-ld)/2):int((n+ld)/2),int((m-Ld)/2):int((m+Ld)/2)] = -1 
+    
     return lat
 
-def rate_constant_init(Nr, kp, kw, km):
+def rate_constant_init(Nr, kp, kw, km, theta):
     """ initialize the rate constant vector of Nr reactions
         0. motor attachment 
         1. motor walking 
@@ -27,7 +36,8 @@ def rate_constant_init(Nr, kp, kw, km):
     k = np.zeros(Nr)
     k[0] = kp 
     k[1] = kw 
-    k[2] = km 
+    k[2] = km
+    k[3] = km*theta
     return k 
 
 
@@ -48,18 +58,27 @@ def initial_event_list_reaction(i, j, lat, occ, ersl, lsre):
         ersl[0].append([i,j])
         lsre[x].append(0)
         
-    elif lat[i,j] == 1: 
-        """ presence of rear head -> motor can detach 
+    elif lat[i,j] == 1 and lat[(i+1)%l,j] == 2: 
+        """ presence of both heads = "normal" detachment 
         """
         occ[2] += 1
         ersl[2].append([i,j])
         lsre[x].append(2)
-        if lat[(i+2)%l,j] == 0:
-            """ if site ahead is vacant -> motor can walk
+        if lat[(i+2)%l,j] != 1:
+            """ if site ahead is not a rear head motor -> motor can walk
+                not rear head = either a vacant or a defect site
             """
             occ[1] += 1
             ersl[1].append([i,j])
             lsre[x].append(1)
+        
+    elif lat[i,j] == 1 and lat[(i+1)%l,j] == -1: 
+        """ presence of only one head and defect ahead = "modified" detachment 
+        """
+        occ[3] += 1
+        ersl[3].append([i,j])
+        lsre[x].append(3)
+        
     return (occ, ersl, lsre)
 
 
@@ -94,15 +113,20 @@ def update_enabled_reaction(i, j, lat):
         """
         lsre_x.append(0)
 
-    elif lat[i,j] == 1: 
-        """ presence of rear head -> motor can detach 
+    elif lat[i,j] == 1 and lat[(i+1)%l,j] == 2: 
+        """ presence of both heads = "normal" detachment 
         """
         lsre_x.append(2)
-        
-        if lat[(i+2)%l,j] == 0:
-            """ if site ahead is vacant -> motor can walk
+        if lat[(i+2)%l,j] != 1:
+            """ if site ahead is not a rear head motor -> motor can walk
+                not rear head = either a vacant or a defect site
             """
             lsre_x.append(1)
+        
+    elif lat[i,j] == 1 and lat[(i+1)%l,j] == -1: 
+        """ presence of only one head and defect ahead = "modified" detachment 
+        """
+        lsre_x.append(3)
     return lsre_x
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
@@ -185,37 +209,6 @@ def next_reaction_draw(k, occ, r):
     return (C, reac)
 
 
-def update_lattice_configuration(lat, occ, ersl, reac, loc):
-    """ change the lattice configuration with new reaction 
-        and create corresponding event lists (ersl + occ)
-    """
-    x = int(loc[0]) ; y = int(loc[1])
-    l = len(lat[:, 0]) 
-    
-    if reac == 0:  
-        """ a motor attaches the lattice 
-        """
-        lat[x, y] = 1  # rear head on the lattice 
-        lat[(x+1)%l, y] = 2 # Leading head on the lattice
-    elif reac == 1:
-        """ a motor takes a step on the lattice
-        toward the increasing x-axis 
-        """
-        lat[x, y] = 0
-        lat[(x+1)%l, y] = 1  
-        lat[(x+2)%l, y] = 2 
-    elif reac == 2: 
-        """ a motor detaches from the lattice
-        """
-        lat[x, y] = 0    
-        lat[(x+1)%l, y] = 0        
-
-    """ create the new ersl + occ 
-    """
-    occ, ersl = scan(lat, loc, ersl, occ)     
-    return (lat, occ, ersl, lsre)
-
-
 def update_lattice_configuration(lat, occ, ersl, lsre, reac, loc):
     """ change the lattice configuration with new reaction 
         and create corresponding event lists (lsre + ersl + occ)
@@ -228,18 +221,30 @@ def update_lattice_configuration(lat, occ, ersl, lsre, reac, loc):
         """
         lat[x, y] = 1  # rear head on the lattice 
         lat[(x+1)%l, y] = 2 # Leading head on the lattice
+    
     elif reac == 1:
         """ a motor takes a step on the lattice
         toward the increasing x-axis 
         """
-        lat[x, y] = 0
-        lat[(x+1)%l, y] = 1  
-        lat[(x+2)%l, y] = 2 
+        if lat[(x+2)%l, y] == -1: 
+            """ presence of a defect ahead """
+            lat[x, y] = 0
+            lat[(x+1)%l, y] = 1  
+        else : 
+            lat[x, y] = 0
+            lat[(x+1)%l, y] = 1  
+            lat[(x+2)%l, y] = 2 
+    
     elif reac == 2: 
         """ a motor detaches from the lattice
         """
         lat[x, y] = 0    
-        lat[(x+1)%l, y] = 0        
+        lat[(x+1)%l, y] = 0   
+        
+    elif reac == 3: 
+        """ one-headed motor detaches from the lattice
+        """
+        lat[x, y] = 0        
 
     """ update the event lists (lsre + ersl + occ)
     """

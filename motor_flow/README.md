@@ -3,9 +3,11 @@
 Here you will find the script used to simulate with a kMC algorithm a flow of processive motors along a lattice.
 
 The motor is considered to be two-headed and walking with a hand-over-hand fashion. 
-In the following clip, you can see a flow of motor (front head in blue, rear head in yellow, and lattice in green).  
+The lattice is composed of m lines of n sites and with periodic conditions (ie. when the motor exits the lattice, it re-enters on the other side).
+In the following clip (real time), you can see a flow of motor with a velocity of 10 sites/s. 
+The color code is the following: blue = motor's front head, lemon = motor's rear head, ligth green = lattice and dark green = lattice vacancy.
 
-(here's a gif clip but not ready yet)
+![](../gifs/dynein_flow_with_defect.gif)
 
 The kMC algorithm was highly optimized thanks to two tricks: 
 1. after each reaction the lattice update is restricted to the neighborhood of the reaction site (ie. a 7x3 rectangle) 
@@ -25,6 +27,5 @@ To tune motor characteristics, you can play with:
 - kw = mean motor velocity in site/s in very low density phase
 - km = inverse of mean motor binding time 
 - kw/km = motor processivity = mean distance travelled by a single motor before detachment of the lattice
-- kM/km = detachment coefficient = impact how lattice vacancy disturbs the motor flux / fixed to 10 = traffic jam but to 100 and you don't get traffic jam
-' 
+- kM/km = detachment coefficient = impact how lattice vacancy disturbs the motor flux / fixed to 1 you get a traffic jam but to 100 you don't 
 

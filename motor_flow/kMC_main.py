@@ -1,5 +1,5 @@
 """
-Created on May 202
+Created on May 2022
 @author: William Lecompte
 Description: 
 kMC simulation based on the VSS method for modelling 
@@ -11,14 +11,7 @@ import time
 import matplotlib.pyplot as plt
 import kMC_Library as kMC
 import Tools as tl
-import progressbar
-  
-widgets = [' [',
-          progressbar.Timer(format= 'elapsed time: %(elapsed)s'),
-          '] ',
-            progressbar.Bar('*'),' (',
-            progressbar.ETA(), ') ',
-          ]
+
 
 def forceAspect(ax,aspect):
     im = ax.get_images()
@@ -33,13 +26,14 @@ time_step = np.zeros(tick_max)
      and for the motor walk model 
 """
 t = 0 # Initial time
-n = 125*10 # Nbr of dimer 
+n = 125*1 # Nbr of dimer 
 m = 13 # Nbr of Protofilaments 
 
-Nr = 3 # Nbr of rate constants
+Nr = 4 # Nbr of rate constants
 kw = 100 # Cte rate of walking process  
 km = 1 # Cte rate of detachment process 
-rho = 0.1
+theta = 1 # detachment coefficient, theta = kM/km 
+rho = 0.1 # motor density at steady-state
 kp = tl.attachment_rate_cte(rho, km, 0) # Cte rate of attachment process 
 
 """ Initialize the lattice + event lists 
@@ -51,27 +45,26 @@ kp = tl.attachment_rate_cte(rho, km, 0) # Cte rate of attachment process
     
 """
 lat = kMC.latice_init(n, m)
-k = kMC.rate_constant_init(Nr, kp, kw, km)
+k = kMC.rate_constant_init(Nr, kp, kw, km, theta)
 occ, ersl, lsre = kMC.initialize_eventlist(lat, Nr)
 
 """ Initialized observables 
 """
 tick = 0 # number of loops 
 tick_visu = 250 # number of loops between 2 frames
-bar = progressbar.ProgressBar(max_value=tick_max, widgets=widgets).start()
 
 """ Lattice visualisation over time
 """
-# fig, ax = plt.subplots(figsize=(12,12)) # Visu
-# title = ax.text(0.5,1.25, "", bbox={'facecolor':'w','edgecolor':'black', 'alpha':0.75, 'pad':5},
-#                 transform=ax.transAxes, ha="center")
-# title.set_text(r"# Loops = {},".format(tick)+" t = {}s".format(np.round(t,2)))
-# im = ax.imshow(np.swapaxes(lat,1,0), interpolation='nearest',cmap='tab20c_r',animated=True,vmin=-6,vmax=6)
-# ax.set_ylim(0,.5)
-# ax.set_xlim(0,n)
-# plt.axis('on')
-# plt.draw()
-# plt.tight_layout()
+fig, ax = plt.subplots(figsize=(12,12)) # Visu
+title = ax.text(0.5,1.25, "", bbox={'facecolor':'w','edgecolor':'black', 'alpha':0.75, 'pad':5},
+                transform=ax.transAxes, ha="center")
+title.set_text(r"# Loops = {},".format(tick)+" t = {}s".format(np.round(t,2)))
+im = ax.imshow(np.swapaxes(lat,1,0), interpolation='nearest',cmap='tab20c_r',animated=True,vmin=-6,vmax=6)
+ax.set_ylim(0,.5)
+ax.set_xlim(0,n)
+plt.axis('on')
+plt.draw()
+plt.tight_layout()
 
 """ loop the simulation while the stop condition is not verified
 """
@@ -90,19 +83,17 @@ while tick < tick_max:
     
     """ lattice visualisation update
     """
-    # if tick%tick_visu == 0:
-    #     plt.cla()
-    #     title = ax.text(0.5, 3, "", bbox={'facecolor':'w','edgecolor':'black', 'alpha':0.75, 'pad':5},
-    #             transform=ax.transAxes, ha="center")
-    #     title.set_text(r"# Loops= {},".format(tick)+" t = {} s".format(np.round(t,2)))
-    #     ax.imshow(np.swapaxes(lat,1,0), interpolation='nearest',cmap='tab20c',animated=True,vmin=-6,vmax=6)
-    #     plt.axis('on')
-    #     plt.draw()
-    #     plt.pause(.1)
-    bar.update(tick)
+    if tick%tick_visu == 0:
+        plt.cla()
+        title = ax.text(0.5, 3, "", bbox={'facecolor':'w','edgecolor':'black', 'alpha':0.75, 'pad':5},
+                transform=ax.transAxes, ha="center")
+        title.set_text(r"# Loops= {},".format(tick)+" t = {} s".format(np.round(t,2)))
+        ax.imshow(np.swapaxes(lat,1,0), interpolation='nearest',cmap='tab20c',animated=True,vmin=-6,vmax=6)
+        plt.axis('on')
+        plt.draw()
+        plt.pause(.1)
 
 t_comput = time.time() - t_init # time to compute the script
 v_loop = t_comput/tick
 print()
 print("it takes", round(v_loop*10**3, 3), "ms per loop")
-print(time_step.mean(), time_step.std())
