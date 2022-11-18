@@ -1,8 +1,6 @@
 ## Example kMC simulation of a microtubule fracture in presence of kinesins-1
 ![](kinesin_fracture.gif)
 
----
-
 ## A simple model for Motor-Tubulin interaction
 
 Microtubules are key structural elements of living cells that are crucial for cell division, intracellular transport and motility. Due to their important role in cell division, microtubules represent a primary target for cancer related drugs.
