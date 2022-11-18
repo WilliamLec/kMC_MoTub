@@ -1,5 +1,5 @@
 ## Example kMC simulation of a microtubule fracture in presence of kinesins-1
-![](kinesin_fracture.gif)
+![](./gifs/kinesin_fracture.gif)
 
 ## A simple model for Motor-Tubulin interaction
 
