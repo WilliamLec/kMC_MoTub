@@ -33,7 +33,7 @@ Therefore this model is only suitable for simulating fracture and tubulin renewa
 
 ### Tubulin renewal with yeast dynein
 
-![](../gifs/defect_dynamics_dynn_rho_0.1_DGp_3.gif)
+![](../gifs/defect_dynamics_dyn_rho_0.1_DGp_3.gif)
 
 ## Reactions List 
 
