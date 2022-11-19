@@ -21,7 +21,7 @@ Therefore this model is only suitable for simulating fracture and tubulin renewa
 - light green = GTP-tubulin dimer
 - greyish site = lattice defect
 
-## Dynamic animations 
+## Animations 
 
 ### Tubulin renewal without motor 
 
