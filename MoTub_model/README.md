@@ -17,7 +17,7 @@ Dependant on the lattice initial configuration, different scenarios can be emula
 - pink lattice = GTP-tubulin dimer
 - grey site = lattice defect
 
-## Dynamic animations 
+## Animations 
 
 ### Dynamic Instabilities with a small density of kinesin-1 with defect along its length
 
